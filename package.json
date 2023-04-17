@@ -1,6 +1,6 @@
 {
   "name": "pdfb",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A pdf building library for nodejs",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
