@@ -7,6 +7,8 @@ import COURIER from '../fonts/internal/courier';
 import assert from '../Assert';
 
 class PDFBuilder {
+	private doc: jsPDF;
+
 	private start: Vector2;
 
 	private position: Vector2;
@@ -24,8 +26,6 @@ class PDFBuilder {
 	private Images: Image[];
 
 	private Texts: Text[];
-
-	doc: jsPDF;
 
 	private fontLoader: FontLoader;
 
@@ -149,7 +149,7 @@ class PDFBuilder {
 	 */
 	Text(text: string, position: Vector2) {
 		const { w, h } = this.doc.getTextDimensions(text, {
-			fontSize: this.fontLoader.size.current,
+			fontSize: this.fontLoader.CurrentSize,
 		});
 
 		const boundingBox = (pos: Vector2, size: Vector2) => {
@@ -164,7 +164,7 @@ class PDFBuilder {
 			data: text,
 			PARENT: this,
 			start: position.clone(),
-			fontSize: this.fontLoader.size.current,
+			fontSize: this.fontLoader.CurrentSize,
 			color: '#2e2e2e',
 			size: vector2(w, h),
 			end: position.clone().addVec(vector2(w, h)),
@@ -415,6 +415,10 @@ class PDFBuilder {
 
 	get Position() {
 		return this.position.clone();
+	}
+
+	get Document() {
+		return this.doc;
 	}
 }
 

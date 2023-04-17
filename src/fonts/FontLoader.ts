@@ -4,14 +4,17 @@ import assert from '../Assert';
 import { Font } from './Font.model';
 
 class FontLoader {
-	doc: jsPDF;
+	private doc: jsPDF;
 
-	size: {
+	private size: {
 		current: number;
 		previous: number;
 		default: number;
 	};
 
+	/**
+	 * @Cleanup use pdf builder instead of doc: jsPDF
+	 */
 	constructor(doc: jsPDF, defaultSize: number) {
 		this.doc = doc;
 		this.size = {
@@ -64,6 +67,18 @@ class FontLoader {
 
 	setFont(font: Font) {
 		this.doc.setFont(font.name, '', font.weight);
+	}
+
+	get CurrentSize() {
+		return this.size.current;
+	}
+
+	get DefaultSize() {
+		return this.size.default;
+	}
+
+	get PreviousSize() {
+		return this.size.previous;
 	}
 }
 
