@@ -2,10 +2,13 @@
   "name": "pdfb",
   "version": "0.1.0",
   "description": "A pdf building library for nodejs",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "./dist"
+  ],
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf ./dist/ && tsc",
     "format": "prettier --write ./src/"
   },
   "keywords": [],
@@ -23,6 +26,7 @@
     "eslint-import-resolver-typescript": "^3.5.3",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-import-no-duplicates-prefix-resolved-path": "^2.0.0",
+    "rimraf": "^5.0.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4"
   }
