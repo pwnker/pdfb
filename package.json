@@ -1,11 +1,12 @@
 {
   "name": "pdfb",
   "version": "0.1.0",
-  "description": "A pdf building library for nodejs hehe",
+  "description": "A pdf building library for nodejs",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "format": "prettier --write ./src/"
   },
   "keywords": [],
   "author": "Tilen Okretic",
