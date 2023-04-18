@@ -1,7 +1,7 @@
 import { assert } from 'console';
-import { Line } from '../main';
-import { Vector2, vector2 } from '../math/Vector2';
-import Page from '../page/Page';
+import { Vector2, vector2 } from '../../math/Vector2';
+import Page from '../../page/Page';
+import { Line } from './Line.model';
 
 class LineComposer {
 	private PARENT: Page;

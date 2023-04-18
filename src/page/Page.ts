@@ -11,7 +11,8 @@ import {
 	Text,
 } from '../main';
 import { assert } from 'console';
-import LineComposer from '../composers/Line.composer';
+import LineComposer from '../composers/line/Line.composer';
+import TextComposer from '../composers/text/Text.composer';
 
 abstract class Page {
 	private padding: Vector2;
@@ -25,7 +26,8 @@ abstract class Page {
 	private doc: jsPDF;
 
 	private composers: {
-		lineComposer: LineComposer;
+		line: LineComposer;
+		text: TextComposer;
 	};
 
 	private elements: {
@@ -58,7 +60,8 @@ abstract class Page {
 		this.doc = parent.Document;
 
 		this.composers = {
-			lineComposer: new LineComposer(this),
+			line: new LineComposer(this),
+			text: new TextComposer(this),
 		};
 
 		this.elements = {
@@ -90,87 +93,29 @@ abstract class Page {
 	 *
 	 * @default { fontSize: 16 }
 	 */
-	Text(text: string, position: Vector2) {
-		const { w, h } = this.doc.getTextDimensions(text, {
-			fontSize: this.fontLoader.CurrentSize,
-		});
-		const boundingBox = (pos: Vector2, size: Vector2) => {
-			return {
-				position: pos.clone(),
-				size,
-				end: position.clone().addVec(vector2(text.length * w, h)),
-			};
-		};
+	Text(
+		text: string,
+		position: Vector2,
+		options = {
+			ignorePadding: false,
+		}
+	) {
+		if (options.ignorePadding === false) {
+			if (position.X < this.padding.X) {
+				position.setX(this.Padding.X);
+			}
+			if (position.X > this.Size.X - this.Padding.X) {
+				position.setX(this.Size.X - this.Padding.X);
+			}
+			if (position.Y < this.padding.Y) {
+				position.setY(this.Padding.Y);
+			}
+			if (position.Y > this.Size.Y - this.Padding.Y) {
+				position.setY(this.Size.Y - this.Padding.Y);
+			}
+		}
 
-		const start = position.clone();
-
-		const txt: Text = {
-			data: text,
-			PARENT: this,
-			start,
-			fontSize: this.fontLoader.CurrentSize,
-			color: '#2e2e2e',
-			size: vector2(w, h),
-			end: start.clone().addVec(vector2(w, h)),
-			getDimensions() {
-				const result = this.PARENT.doc.getTextDimensions(this.data, {
-					fontSize: this.fontSize,
-				});
-				return vector2(result.w, result.h);
-			},
-			getRenderVector() {
-				const { Y: height } = this.getDimensions();
-				return this.start.clone().add(0, height - height / 8);
-			},
-			setFontSize(size: number) {
-				this.fontSize = size;
-				this.size = this.getDimensions();
-				this.start = position.clone();
-				this.end = position.clone().addVec(this.size);
-				return this;
-			},
-			setColor(color: string) {
-				this.color = color;
-				return this;
-			},
-			underline(yoffset?: number) {
-				const curDrawColor = this.PARENT.doc.getDrawColor();
-				this.PARENT.doc.setDrawColor(this.color);
-				this.size.add(0, yoffset ?? 1);
-				this.end.add(0, yoffset ?? 1);
-				this.PARENT.Line(
-					this.start.clone().setY(this.end.Y),
-					this.end.clone()
-				).setStyle({
-					color: this.color,
-				});
-				this.PARENT.doc.setDrawColor(curDrawColor);
-				return this;
-			},
-			renderBoundingBox() {
-				const bb = boundingBox(this.start.clone(), this.size.clone());
-				this.PARENT.Rect(bb.position, bb.size).render();
-			},
-			render() {
-				const curTextColor = this.PARENT.doc.getTextColor();
-				// this.renderBoundingBox();
-				this.PARENT.doc.setTextColor(this.color);
-				this.PARENT.fontLoader.setFontSize(this.fontSize);
-				this.PARENT.doc.text(
-					this.data,
-					this.getRenderVector().X,
-					this.getRenderVector().Y
-				);
-				this.PARENT.fontLoader.restoreFontSize();
-				this.PARENT.doc.setTextColor(curTextColor);
-			},
-			Start() {
-				return this.start.clone();
-			},
-			End() {
-				return this.end.clone();
-			},
-		};
+		const txt = this.composers.text.newText(text, position);
 		this.elements.texts.push(txt);
 		return txt;
 	}
@@ -182,8 +127,41 @@ abstract class Page {
 	 * @Todo write documentation
 	 * @default style: { color: '#2e2e2e', width: 1 }
 	 */
-	Line(p1: Vector2, p2: Vector2) {
-		const line = this.composers.lineComposer.newLine(p1, p2);
+	Line(
+		p1: Vector2,
+		p2: Vector2,
+		options = {
+			ignorePadding: false,
+		}
+	) {
+		if (options.ignorePadding === false) {
+			if (p1.X < this.padding.X) {
+				p1.setX(this.Padding.X);
+			}
+			if (p2.X < this.padding.X) {
+				p2.setX(this.Padding.X);
+			}
+			if (p1.X > this.Size.X - this.Padding.X) {
+				p1.setX(this.Size.X - this.Padding.X);
+			}
+			if (p2.X > this.Size.X - this.Padding.X) {
+				p2.setX(this.Size.X - this.Padding.X);
+			}
+			if (p1.Y < this.padding.Y) {
+				p1.setY(this.Padding.Y);
+			}
+			if (p2.Y < this.padding.Y) {
+				p1.setY(this.Padding.Y);
+			}
+			if (p1.Y > this.Size.Y - this.Padding.Y) {
+				p1.setY(this.Size.Y - this.Padding.Y);
+			}
+			if (p2.Y > this.Size.Y - this.Padding.Y) {
+				p2.setY(this.Size.Y - this.Padding.Y);
+			}
+		}
+
+		const line = this.composers.line.newLine(p1, p2);
 		this.elements.lines.push(line);
 		return line;
 	}
@@ -350,25 +328,37 @@ abstract class Page {
 		// Left
 		this.Line(
 			vector2(this.Padding.X, 0),
-			vector2(this.Padding.X, this.Size.Y)
+			vector2(this.Padding.X, this.Size.Y),
+			{
+				ignorePadding: true,
+			}
 		).setStyle(LineStyles);
 
 		// Top
 		this.Line(
 			vector2(0, this.Padding.Y),
-			vector2(this.Size.X, this.Padding.Y)
+			vector2(this.Size.X, this.Padding.Y),
+			{
+				ignorePadding: true,
+			}
 		).setStyle(LineStyles);
 
 		// Right
 		this.Line(
 			vector2(this.Size.X - this.Padding.X, 0),
-			vector2(this.Size.X - this.Padding.X, this.Size.Y)
+			vector2(this.Size.X - this.Padding.X, this.Size.Y),
+			{
+				ignorePadding: true,
+			}
 		).setStyle(LineStyles);
 
 		// Bottom
 		this.Line(
 			vector2(0, this.Size.Y - this.Padding.Y),
-			vector2(this.Size.X, this.Size.Y - this.Padding.Y)
+			vector2(this.Size.X, this.Size.Y - this.Padding.Y),
+			{
+				ignorePadding: true,
+			}
 		).setStyle(LineStyles);
 
 		return this;
@@ -388,6 +378,10 @@ abstract class Page {
 
 	get Document() {
 		return this.doc;
+	}
+
+	get FontLoader() {
+		return this.fontLoader;
 	}
 
 	setPadding(x: number, y: number) {
