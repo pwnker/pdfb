@@ -11,6 +11,7 @@ import {
 	Text,
 } from '../main';
 import { assert } from 'console';
+import LineComposer from '../composers/Line.composer';
 
 abstract class Page {
 	private padding: Vector2;
@@ -22,6 +23,10 @@ abstract class Page {
 	private fontLoader: FontLoader;
 
 	private doc: jsPDF;
+
+	private composers: {
+		lineComposer: LineComposer;
+	};
 
 	private elements: {
 		lines: Line[];
@@ -52,6 +57,10 @@ abstract class Page {
 		this.fontLoader = parent.FontLoader;
 		this.doc = parent.Document;
 
+		this.composers = {
+			lineComposer: new LineComposer(this),
+		};
+
 		this.elements = {
 			lines: [],
 			rects: [],
@@ -75,6 +84,7 @@ abstract class Page {
 	}
 
 	/**
+	 * Position is absolute
 	 * Text element that will be rendered onto the PDF
 	 * @Todo write documentation
 	 *
@@ -92,7 +102,7 @@ abstract class Page {
 			};
 		};
 
-		const start = position.clone().addVec(this.Padding);
+		const start = position.clone();
 
 		const txt: Text = {
 			data: text,
@@ -173,58 +183,7 @@ abstract class Page {
 	 * @default style: { color: '#2e2e2e', width: 1 }
 	 */
 	Line(p1: Vector2, p2: Vector2) {
-		const line: Line = {
-			start: p1,
-			end: p2,
-			size: vector2(p2.X - p1.X, p2.Y - p1.Y),
-			style: {
-				color: '#2e2e2e',
-				width: 1,
-				dashed: {
-					pattern: [],
-					start: 0,
-				},
-			},
-			PARENT: this,
-			setStyle(
-				style: Partial<{
-					color: string;
-					dashed: { pattern: [number, number] | never[]; start: number };
-				}>
-			): Line {
-				this.style = {
-					...this.style,
-					...style,
-				};
-				return this;
-			},
-			renderBoundingBox() {
-				assert(false, 'TODO:');
-			},
-			render(): void {
-				const curDrawColor = this.PARENT.doc.getDrawColor();
-
-				this.PARENT.doc.setDrawColor(this.style.color);
-				this.PARENT.doc.setLineDashPattern(
-					this.style.dashed.pattern,
-					this.style.dashed.start
-				);
-				this.PARENT.doc.line(
-					this.start.X,
-					this.start.Y,
-					this.end.X,
-					this.end.Y
-				);
-
-				this.PARENT.doc.setDrawColor(curDrawColor);
-			},
-			Start() {
-				return this.start.clone();
-			},
-			End() {
-				return this.end.clone();
-			},
-		};
+		const line = this.composers.lineComposer.newLine(p1, p2);
 		this.elements.lines.push(line);
 		return line;
 	}
@@ -425,6 +384,10 @@ abstract class Page {
 
 	get Padding() {
 		return this.padding.clone();
+	}
+
+	get Document() {
+		return this.doc;
 	}
 
 	setPadding(x: number, y: number) {
