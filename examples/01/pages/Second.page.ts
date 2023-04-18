@@ -7,6 +7,11 @@ class Second extends Page {
 
 		this.Text('Goodbye World!', vector2(0, 0));
 
+		this.Rect(vector2(100, 20), vector2(-500, 10)).setStyle({
+			fillStyle: 'DF',
+			fill: '#2e2e2e',
+		});
+
 		this.renderPaddingBorder();
 	}
 }

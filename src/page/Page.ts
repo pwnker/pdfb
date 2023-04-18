@@ -13,6 +13,7 @@ import {
 import { assert } from 'console';
 import LineComposer from '../composers/line/Line.composer';
 import TextComposer from '../composers/text/Text.composer';
+import RectComposer from '../composers/rect/Rect.composer';
 
 abstract class Page {
 	private padding: Vector2;
@@ -28,6 +29,7 @@ abstract class Page {
 	private composers: {
 		line: LineComposer;
 		text: TextComposer;
+		rect: RectComposer;
 	};
 
 	private elements: {
@@ -62,6 +64,7 @@ abstract class Page {
 		this.composers = {
 			line: new LineComposer(this),
 			text: new TextComposer(this),
+			rect: new RectComposer(this),
 		};
 
 		this.elements = {
@@ -238,66 +241,40 @@ abstract class Page {
 	 *
 	 * @default style: { fillStyle: 'S', fill: '' }
 	 */
-	Rect(p1: Vector2, size: Vector2) {
-		const rect: Rect = {
-			start: p1.clone(),
-			size,
-			end: p1.clone().addVec(size),
-			style: {
-				fillStyle: 'S',
-				fill: '',
-				line: {
-					color: '',
-					width: 0,
-					dashed: {
-						pattern: [],
-						start: 0,
-					},
-				},
-			},
-			PARENT: this,
-			setStyle(style: Partial<RectStyle>): Rect {
-				this.style = {
-					...this.style,
-					...style,
-				};
-				return this;
-			},
-			renderBoundingBox() {
-				assert(false, 'TODO:');
-			},
-			render(): void {
-				const curFillColor = this.PARENT.doc.getFillColor();
-				const curLineWidth = this.PARENT.doc.getLineWidth();
+	Rect(
+		position: Vector2,
+		size: Vector2,
+		options = {
+			ignorePadding: false,
+		}
+	) {
+		if (options.ignorePadding === false) {
+			if (position.X < this.padding.X) {
+				position.setX(this.Padding.X);
+			}
 
-				this.PARENT.doc.setFillColor(this.style.fill);
-				this.PARENT.doc.setLineWidth(this.style.line.width);
-				this.PARENT.doc.setLineDashPattern(
-					this.style.line.dashed.pattern,
-					this.style.line.dashed.start
-				);
-				this.PARENT.doc.rect(
-					this.start.X,
-					this.start.Y,
-					this.size.X,
-					this.size.Y,
-					this.style.fillStyle
-				);
+			if (position.X + size.X > this.Size.X - this.Padding.X) {
+				size.setX(this.Size.X - this.Padding.X - position.X);
+			}
 
-				this.PARENT.doc.setFillColor(curFillColor);
-				this.PARENT.doc.setLineWidth(curLineWidth);
-			},
+			if (position.X + size.X < this.Padding.X) {
+				size.setX(this.Padding.X - position.X);
+			}
 
-			Start() {
-				return this.start.clone();
-			},
-			End() {
-				return this.end.clone();
-			},
-		};
+			if (position.X > this.Size.X - this.Padding.X) {
+				position.setX(this.Size.X - this.Padding.X);
+			}
 
+			if (position.Y < this.padding.Y) {
+				position.setY(this.Padding.Y);
+			}
+			if (position.Y > this.Size.Y - this.Padding.Y) {
+				position.setY(this.Size.Y - this.Padding.Y);
+			}
+		}
+
+		const rect = this.composers.rect.newRect(position, size);
 		this.elements.rects.push(rect);
-
 		return rect;
 	}
 
