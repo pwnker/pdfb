@@ -3,7 +3,11 @@ import Page from '../../../src/page/Page';
 
 class Second extends Page {
 	bootstrap(): void {
-		this.Text('Goodbye World!', vector2(10, 0));
+		this.setPadding(50, 10);
+
+		this.Text('Goodbye World!', vector2(0, 0));
+
+		this.renderPaddingBorder();
 	}
 }
 

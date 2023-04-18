@@ -91,14 +91,17 @@ abstract class Page {
 				end: position.clone().addVec(vector2(text.length * w, h)),
 			};
 		};
+
+		const start = position.clone().addVec(this.Padding);
+
 		const txt: Text = {
 			data: text,
 			PARENT: this,
-			start: position.clone(),
+			start,
 			fontSize: this.fontLoader.CurrentSize,
 			color: '#2e2e2e',
 			size: vector2(w, h),
-			end: position.clone().addVec(vector2(w, h)),
+			end: start.clone().addVec(vector2(w, h)),
 			getDimensions() {
 				const result = this.PARENT.doc.getTextDimensions(this.data, {
 					fontSize: this.fontSize,
@@ -150,6 +153,12 @@ abstract class Page {
 				);
 				this.PARENT.fontLoader.restoreFontSize();
 				this.PARENT.doc.setTextColor(curTextColor);
+			},
+			Start() {
+				return this.start.clone();
+			},
+			End() {
+				return this.end.clone();
 			},
 		};
 		this.elements.texts.push(txt);
@@ -209,6 +218,12 @@ abstract class Page {
 
 				this.PARENT.doc.setDrawColor(curDrawColor);
 			},
+			Start() {
+				return this.start.clone();
+			},
+			End() {
+				return this.end.clone();
+			},
 		};
 		this.elements.lines.push(line);
 		return line;
@@ -267,6 +282,12 @@ abstract class Page {
 					size.X,
 					size.Y
 				);
+			},
+			Start() {
+				return this.start.clone();
+			},
+			End() {
+				return this.end.clone();
 			},
 		};
 
@@ -328,6 +349,13 @@ abstract class Page {
 
 				this.PARENT.doc.setFillColor(curFillColor);
 				this.PARENT.doc.setLineWidth(curLineWidth);
+			},
+
+			Start() {
+				return this.start.clone();
+			},
+			End() {
+				return this.end.clone();
 			},
 		};
 

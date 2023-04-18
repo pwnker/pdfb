@@ -24,6 +24,8 @@ export interface PDFElement {
 	end: Vector2;
 	renderBoundingBox(): void;
 	render(): void;
+	Start(): Vector2;
+	End(): Vector2;
 }
 
 export type Line = PDFElement & {
