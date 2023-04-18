@@ -1,15 +1,10 @@
 import { assert } from 'console';
 import { Vector2 } from '../../math/Vector2';
 import Page from '../../page/Page';
-import { Rect, RectFillStyle, RectStyle } from './Rect.model';
+import { Rect, RectStyle } from './Rect.model';
+import Composer from '../Composer';
 
-class RectComposer {
-	private PARENT: Page;
-
-	constructor(parent: Page) {
-		this.PARENT = parent;
-	}
-
+class RectComposer extends Composer {
 	/**
 	 *
 	 * @default
@@ -30,7 +25,7 @@ class RectComposer {
 	 * @param size
 	 * @returns
 	 */
-	newRect(p1: Vector2, size: Vector2) {
+	new(p1: Vector2, size: Vector2) {
 		const rect: Rect = {
 			start: p1.clone(),
 			size,

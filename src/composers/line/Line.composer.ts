@@ -1,15 +1,9 @@
 import { assert } from 'console';
 import { Vector2, vector2 } from '../../math/Vector2';
-import Page from '../../page/Page';
 import { Line } from './Line.model';
+import Composer from '../Composer';
 
-class LineComposer {
-	private PARENT: Page;
-
-	constructor(parent: Page) {
-		this.PARENT = parent;
-	}
-
+class LineComposer extends Composer {
 	/**
 	 * Creates a new line object
 	 * Position is absolute
@@ -22,7 +16,7 @@ class LineComposer {
 	 * @param p2 end vector 2D
 	 * @returns Line
 	 */
-	newLine(p1: Vector2, p2: Vector2) {
+	new(p1: Vector2, p2: Vector2) {
 		const line: Line = {
 			start: p1,
 			end: p2,

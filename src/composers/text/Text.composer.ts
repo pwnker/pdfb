@@ -1,14 +1,8 @@
 import { Vector2, vector2 } from '../../math/Vector2';
-import Page from '../../page/Page';
+import Composer from '../Composer';
 import { Text } from './Text.model';
 
-class TextComposer {
-	private PARENT: Page;
-
-	constructor(parent: Page) {
-		this.PARENT = parent;
-	}
-
+class TextComposer extends Composer {
 	/**
 	 * Position is absolute
 	 * Text element that will be rendered onto the PDF
@@ -16,7 +10,7 @@ class TextComposer {
 	 *
 	 * @default { fontSize: 16 }
 	 */
-	newText(text: string, position: Vector2) {
+	new(text: string, position: Vector2) {
 		const { w, h } = this.PARENT.Document.getTextDimensions(text, {
 			fontSize: this.PARENT.FontLoader.CurrentSize,
 		});

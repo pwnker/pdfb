@@ -1,14 +1,8 @@
 import { Vector2, vector2 } from '../../math/Vector2';
-import Page from '../../page/Page';
+import Composer from '../Composer';
 import { Image } from './Image.model';
 
-class ImageComposer {
-	private PARENT: Page;
-
-	constructor(parent: Page) {
-		this.PARENT = parent;
-	}
-
+class ImageComposer extends Composer {
 	/**
 	 * @Todo write documentation
 	 */

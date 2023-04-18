@@ -112,7 +112,7 @@ abstract class Page {
 			}
 		}
 
-		const txt = this.composers.text.newText(text, position);
+		const txt = this.composers.text.new(text, position);
 		this.elements.texts.push(txt);
 		return txt;
 	}
@@ -158,7 +158,7 @@ abstract class Page {
 			}
 		}
 
-		const line = this.composers.line.newLine(p1, p2);
+		const line = this.composers.line.new(p1, p2);
 		this.elements.lines.push(line);
 		return line;
 	}
@@ -243,7 +243,7 @@ abstract class Page {
 			}
 		}
 
-		const rect = this.composers.rect.newRect(position, size);
+		const rect = this.composers.rect.new(position, size);
 		this.elements.rects.push(rect);
 		return rect;
 	}
