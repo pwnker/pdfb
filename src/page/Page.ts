@@ -1,19 +1,11 @@
 import jsPDF from 'jspdf';
 
 import { Vector2, vector2 } from '../math/Vector2';
-import {
-	FontLoader,
-	Image,
-	Line,
-	PDFBuilder,
-	Rect,
-	RectStyle,
-	Text,
-} from '../main';
-import { assert } from 'console';
+import { FontLoader, Image, Line, PDFBuilder, Rect, Text } from '../main';
 import LineComposer from '../composers/line/Line.composer';
 import TextComposer from '../composers/text/Text.composer';
 import RectComposer from '../composers/rect/Rect.composer';
+import ImageComposer from '../composers/image/Image.composer';
 
 abstract class Page {
 	private padding: Vector2;
@@ -30,6 +22,7 @@ abstract class Page {
 		line: LineComposer;
 		text: TextComposer;
 		rect: RectComposer;
+		image: ImageComposer;
 	};
 
 	private elements: {
@@ -65,6 +58,7 @@ abstract class Page {
 			line: new LineComposer(this),
 			text: new TextComposer(this),
 			rect: new RectComposer(this),
+			image: new ImageComposer(this),
 		};
 
 		this.elements = {
@@ -170,66 +164,42 @@ abstract class Page {
 	}
 
 	/**
-	 * Image element that will be rendered onto the PDF
-	 *
 	 * @Todo write documentation
-	 * @default { format: 'png' }
-	 */
-	Image(imageData: string, position: Vector2, size: Vector2) {
-		const boundingBox = (pos: Vector2, bsize: Vector2) => {
-			return {
-				position: pos.clone(),
-				size: bsize,
-				end: position.clone().addVec(bsize),
-			};
-		};
+\	 */
+	Image(
+		imageData: string,
+		position: Vector2,
+		size: Vector2,
+		options = {
+			ignorePadding: false,
+		}
+	) {
+		if (options.ignorePadding === false) {
+			if (position.X < this.padding.X) {
+				position.setX(this.Padding.X);
+			}
 
-		const image: Image = {
-			data: imageData,
-			start: position.clone(),
-			size,
-			end: position.clone().addVec(size),
-			format: 'png',
-			PARENT: this,
-			setFormat(format: 'png' | 'jpg'): Image {
-				this.format = format;
-				return this;
-			},
-			underline(offset?: Vector2) {
-				this.PARENT.Line(
-					this.start
-						.clone()
-						.add(0, this.size.Y)
-						.addVec(offset ?? vector2(0, 0)),
-					this.start
-						.clone()
-						.addVec(this.size)
-						.addVec((offset ?? vector2(0, 0)).scaleXY(-1, 1))
-				);
-				return this;
-			},
-			renderBoundingBox() {
-				const bb = boundingBox(this.start.clone(), this.size.clone());
-				this.PARENT.Rect(bb.position, bb.size).render();
-			},
-			render(): void {
-				// this.renderBoundingBox();
-				this.PARENT.doc.addImage(
-					imageData,
-					'png',
-					this.start.X,
-					this.start.Y,
-					size.X,
-					size.Y
-				);
-			},
-			Start() {
-				return this.start.clone();
-			},
-			End() {
-				return this.end.clone();
-			},
-		};
+			if (position.X + size.X > this.Size.X - this.Padding.X) {
+				size.setX(this.Size.X - this.Padding.X - position.X);
+			}
+
+			if (position.X + size.X < this.Padding.X) {
+				size.setX(this.Padding.X - position.X);
+			}
+
+			if (position.X > this.Size.X - this.Padding.X) {
+				position.setX(this.Size.X - this.Padding.X);
+			}
+
+			if (position.Y < this.padding.Y) {
+				position.setY(this.Padding.Y);
+			}
+			if (position.Y > this.Size.Y - this.Padding.Y) {
+				position.setY(this.Size.Y - this.Padding.Y);
+			}
+		}
+
+		const image = this.composers.image.new(imageData, position, size);
 
 		this.elements.images.push(image);
 
