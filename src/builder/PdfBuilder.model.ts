@@ -1,5 +1,6 @@
 import { Vector2 } from '../math/Vector2';
-import PDFBuilder from './PDFBuilder';
+import Page from '../page/Page';
+// import PDFBuilder from './PDFBuilder';
 
 export type LineStyle = {
 	color: string;
@@ -17,7 +18,7 @@ export type RectStyle = {
 };
 
 export interface PDFElement {
-	PARENT: PDFBuilder;
+	PARENT: Page;
 	start: Vector2;
 	size: Vector2;
 	end: Vector2;
