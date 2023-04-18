@@ -7,7 +7,9 @@ import { PDFBuilder } from '../../src';
 import First from './pages/First.page';
 import Second from './pages/Second.page';
 
-const EXAMPLE_PDF_PATH = `${__dirname}/pdfs/01-example.pdf`;
+const EXAMPLE_ID = '01';
+
+const EXAMPLE_PDF_PATH = `${__dirname}/result/${EXAMPLE_ID}-example.pdf`;
 
 const doc = new jsPDF();
 const builder = new PDFBuilder(doc);
