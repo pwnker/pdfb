@@ -10,6 +10,18 @@ class LineComposer {
 		this.PARENT = parent;
 	}
 
+	/**
+	 * Creates a new line object
+	 * Position is absolute
+	 * @default
+	 * style:
+	 * 	color: "#2e2e2e"
+	 * 	width: 1
+	 *
+	 * @param p1 start vector 2D
+	 * @param p2 end vector 2D
+	 * @returns Line
+	 */
 	newLine(p1: Vector2, p2: Vector2) {
 		const line: Line = {
 			start: p1,
