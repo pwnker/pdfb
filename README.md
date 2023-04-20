@@ -6,6 +6,9 @@ A pdf building library for nodejs hehe.
 
 ## TODO
 
+* [ ] ```Section.class``` calculate **start**, **end**, **size** based of the elements inside
+  * basically a way of creating a wrapper (background) that covers all elements of a section
+
 * [ ] ```Page```
   * Stores individual page data
   * ```Section[]```

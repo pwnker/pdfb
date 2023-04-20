@@ -41,7 +41,6 @@ class PDFBuilder {
 	 * @Cleanup - should the user be responsable for the start, position and buffer reset ??
 	 */
 	AddPage(page: Page) {
-		page.bootstrap();
 		this.Pages.push(page);
 	}
 

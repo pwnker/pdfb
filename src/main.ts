@@ -1,9 +1,10 @@
 import PDFBuilder from './builder/PDFBuilder';
-import SectionBuilder from './section/SectionBuilder';
+import Section from './section/Section';
 import FontLoader from './fonts/FontLoader';
 import HELVETICA from './fonts/internal/helvetica';
 import TIMES from './fonts/internal/times';
 import COURIER from './fonts/internal/courier';
+import Page from './page/Page';
 
 const version = () => {
 	return '0.1.0';
@@ -19,4 +20,4 @@ const FONTS = {
 	HELVETICA,
 };
 
-export { version, PDFBuilder, SectionBuilder, FontLoader, FONTS };
+export { version, PDFBuilder, Page, Section, FontLoader, FONTS };

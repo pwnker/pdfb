@@ -1,7 +1,15 @@
 import jsPDF from 'jspdf';
 
 import { Vector2, vector2 } from '../math/Vector2';
-import { FontLoader, Image, Line, PDFBuilder, Rect, Text } from '../main';
+import {
+	FontLoader,
+	Image,
+	Line,
+	PDFBuilder,
+	Rect,
+	Section,
+	Text,
+} from '../main';
 import LineComposer from '../composers/line/Line.composer';
 import TextComposer from '../composers/text/Text.composer';
 import RectComposer from '../composers/rect/Rect.composer';
@@ -30,6 +38,7 @@ abstract class Page {
 		rects: Rect[];
 		images: Image[];
 		texts: Text[];
+		sections: Section[];
 	};
 
 	constructor(
@@ -66,12 +75,15 @@ abstract class Page {
 			rects: [],
 			images: [],
 			texts: [],
+			sections: [],
 		};
-
-		this.bootstrap();
 	}
 
 	abstract bootstrap(): void;
+
+	Section(section: Section) {
+		this.elements.sections.push(section);
+	}
 
 	clearBuffer() {
 		this.elements = {
@@ -79,6 +91,7 @@ abstract class Page {
 			rects: [],
 			images: [],
 			texts: [],
+			sections: [],
 		};
 		return this;
 	}
@@ -221,6 +234,7 @@ abstract class Page {
 		if (options.ignorePadding === false) {
 			if (position.X < this.padding.X) {
 				position.setX(this.Padding.X);
+				size.add(-position.X, 0);
 			}
 
 			if (position.X + size.X > this.Size.X - this.Padding.X) {
@@ -237,6 +251,7 @@ abstract class Page {
 
 			if (position.Y < this.padding.Y) {
 				position.setY(this.Padding.Y);
+				size.add(0, -position.Y);
 			}
 			if (position.Y > this.Size.Y - this.Padding.Y) {
 				position.setY(this.Size.Y - this.Padding.Y);
@@ -249,17 +264,25 @@ abstract class Page {
 	}
 
 	render() {
+		this.bootstrap();
 		this.elements.lines.forEach((line) => {
 			line.render();
 		});
-		this.elements.texts.forEach((text) => {
-			text.render();
-		});
+
 		this.elements.rects.forEach((rect) => {
 			rect.render();
 		});
+
 		this.elements.images.forEach((image) => {
 			image.render();
+		});
+
+		this.elements.texts.forEach((text) => {
+			text.render();
+		});
+
+		this.elements.sections.forEach((section) => {
+			section.render();
 		});
 	}
 
@@ -329,6 +352,22 @@ abstract class Page {
 
 	get FontLoader() {
 		return this.fontLoader;
+	}
+
+	get ComposerText() {
+		return this.composers.text;
+	}
+
+	get ComposeRect() {
+		return this.composers.rect;
+	}
+
+	get ComposerImage() {
+		return this.composers.image;
+	}
+
+	get ComposerLine() {
+		return this.composers.line;
 	}
 
 	setPadding(x: number, y: number) {
