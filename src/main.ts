@@ -14,6 +14,11 @@ export * from './builder/PdfBuilder.model';
 
 export * from './fonts/Font.model';
 
+export * from './composers/image/Image.model';
+export * from './composers/rect/Rect.model';
+export * from './composers/line/Line.model';
+export * from './composers/text/Text.model';
+
 const FONTS = {
 	COURIER,
 	TIMES,

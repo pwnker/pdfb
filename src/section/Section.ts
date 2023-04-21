@@ -9,11 +9,11 @@ class Section {
 
 	private padding: Vector2;
 
+	private start: Vector2;
+
 	private size: Vector2;
 
 	private content: {
-		start: Vector2;
-		cursor: Vector2;
 		background: Rect | null;
 		border: Rect | null;
 		lines: Line[];
@@ -23,55 +23,91 @@ class Section {
 
 	constructor(parent: Page, position: Vector2, padding?: Vector2) {
 		this.PARENT = parent;
+
 		this.position = position.clone();
 		this.padding = padding ?? vector2(0, 0);
+
+		this.start = this.position.clone().addVec(this.padding);
+		this.size = this.padding.clone();
+
 		this.content = {
-			start: this.position.clone().addVec(this.padding),
-			cursor: this.position.clone().addVec(this.padding),
 			background: null,
 			border: null,
 			lines: [],
 			images: [],
 			texts: [],
 		};
-		this.size = vector2(0, 0);
 	}
 
-	addLine(start: Vector2, end: Vector2) {
-		const line = this.PARENT.ComposerLine.new(
-			this.content.start.clone().addVec(start),
-			this.content.start.clone().addVec(end)
-		);
+	// addLine(start: Vector2, end: Vector2) {
+	// 	const line = this.PARENT.ComposerLine.new(
+	// 		this.content.start.clone().addVec(start),
+	// 		this.content.start.clone().addVec(end)
+	// 	);
 
-		this.content.lines.push(line);
-		return line;
-	}
+	// 	this.content.lines.push(line);
+	// 	return line;
+	// }
 
-	addText(text: string, position: Vector2) {
+	addText(
+		text: string,
+		position: Vector2,
+		options: Partial<{
+			fontSize: number;
+			underline: boolean;
+			color: string;
+		}> = {
+			fontSize: 12,
+			underline: false,
+			color: '#2e2e2e',
+		}
+	) {
 		const txt = this.PARENT.ComposerText.new(
 			text,
-			this.content.start.clone().addVec(position)
-		);
+			this.start.clone().addVec(position)
+		).setFontSize(options.fontSize ?? 12);
+
+		if (options.color !== undefined) {
+			txt.setColor(options.color);
+		}
+
+		if (options.underline === true) {
+			txt.underline();
+		}
+
+		txt.end.substractVec(this.start);
 
 		this.content.texts.push(txt);
+
+		const SizeVector = txt.end
+			.clone()
+			.addVec(this.start)
+			.substractVec(this.start.clone())
+			.addVec(this.padding.clone().scale(2));
+		this.size.update(SizeVector);
+
 		return txt;
 	}
 
 	addImage(imageData: string, position: Vector2, size: Vector2) {
 		const img = this.PARENT.ComposerImage.new(
 			imageData,
-			this.content.start.clone().addVec(position),
+			this.start.clone().addVec(position),
 			size
 		);
 
-		this.content.images.push(img);
-		return img;
-	}
+		img.end.substractVec(this.start);
 
-	computeSize() {
-		this.content.texts.forEach((text) => {
-			this.size.update(text.end.clone().substractVec(this.PARENT.Padding));
-		});
+		this.content.images.push(img);
+
+		const SizeVector = img.end
+			.clone()
+			.addVec(this.start)
+			.substractVec(this.start.clone())
+			.addVec(this.padding.clone().scale(2));
+		this.size.update(SizeVector);
+
+		return img;
 	}
 
 	rednerBorder(
@@ -80,7 +116,6 @@ class Section {
 		}
 	) {
 		let rect;
-		this.computeSize();
 		if (options.side === 'all') {
 			rect = this.PARENT.ComposeRect.new(this.Position, this.Size);
 		} else if (options.side === 'bottom') {
@@ -96,8 +131,6 @@ class Section {
 
 	// #1e7da9
 	fill() {
-		this.computeSize();
-
 		const rect = this.PARENT.ComposeRect.new(this.Position, this.Size).setStyle(
 			{
 				fillStyle: 'DF',
@@ -132,6 +165,10 @@ class Section {
 
 	get Position() {
 		return this.position.clone();
+	}
+
+	get Start() {
+		return this.start.clone();
 	}
 
 	get Size() {

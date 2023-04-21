@@ -265,12 +265,17 @@ abstract class Page {
 
 	render() {
 		this.bootstrap();
-		this.elements.lines.forEach((line) => {
-			line.render();
+
+		this.elements.sections.forEach((section) => {
+			section.render();
 		});
 
 		this.elements.rects.forEach((rect) => {
 			rect.render();
+		});
+
+		this.elements.lines.forEach((line) => {
+			line.render();
 		});
 
 		this.elements.images.forEach((image) => {
@@ -279,10 +284,6 @@ abstract class Page {
 
 		this.elements.texts.forEach((text) => {
 			text.render();
-		});
-
-		this.elements.sections.forEach((section) => {
-			section.render();
 		});
 	}
 
