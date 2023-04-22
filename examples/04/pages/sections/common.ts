@@ -32,7 +32,10 @@ const headerSection = (parent: Page, orderId: string) => {
 		}
 	);
 
-	// header.addLine(vector2(0, 22), header.Size.setY(22));
+	// header.addLine(
+	// 	vector2(0, header.Position.Y + header.Size.Y),
+	// 	header.Size.setY(22)
+	// );
 
 	header.rednerBorder({
 		side: 'bottom',

@@ -7,10 +7,17 @@ class First extends Page {
 
 	private FONT_COLOR = '#ffffff';
 
-	clientSection(start: Vector2, email: string, mobile: string) {
+	private SECTION_SPACING = 10;
+
+	clientSection(
+		start: Vector2,
+		email: string,
+		mobile: string,
+		header: Section
+	) {
 		const test = new Section(this, start, vector2(2, 2));
 
-		test.setSize(vector2(this.Size.X / 2 - 15, 0));
+		test.setSize(vector2(header.Size.X / 2 - this.SECTION_SPACING / 2, 0));
 
 		const INDENT = vector2(5, 1);
 
@@ -51,12 +58,12 @@ class First extends Page {
 		return test;
 	}
 
-	priceSection(start: Vector2, priceStream: string) {
+	priceSection(start: Vector2, priceStream: string, header: Section) {
 		const priceSplit = priceStream.split(';');
 
-		const section = new Section(this, start, vector2(4, 4));
+		const section = new Section(this, start, vector2(2, 2));
 
-		section.setSize(vector2(this.Size.X / 2 - 5, 0));
+		section.setSize(vector2(header.Size.X / 2 - this.SECTION_SPACING / 2, 0));
 
 		const title = section.addText('Price:', vector2(0, 0), {
 			fontSize: this.FONT_SIZE + 2,
@@ -87,29 +94,27 @@ class First extends Page {
 	}
 
 	bootstrap(): void {
-		this.setPadding(10, 10);
+		this.setPadding(15, 15);
 
 		const header = common.headerSection(
 			this,
 			'9dccf243290cb418b7ee138654e30f4822628ba1010898fa56977b5a1bc7d4cf'
 		);
 
-		const INNER_PAGE_INDENT = 0;
 		const client = this.clientSection(
-			header.Position.add(
-				INNER_PAGE_INDENT,
-				header.Size.Y + INNER_PAGE_INDENT
-			).add(0, 2),
+			vector2(header.Position.X, header.Position.Y + header.Size.Y + 2),
 			'example@gmail.com',
-			'0038640437269'
+			'0038640437269',
+			header
 		);
 
 		const price = this.priceSection(
-			vector2(header.Size.X / 2 + 8, header.Position.Y + header.Size.Y).add(
-				0,
-				2
+			vector2(
+				client.Position.X + client.Size.X + this.SECTION_SPACING,
+				client.Position.Y
 			),
-			'KB05MI-982;KB05MI-892;KB05MI-829;KB05MI-982;KB05MI-929;'
+			'KB05MI-982;KB05MI-892;KB05MI-829;KB05MI-982;KB05MI-929;',
+			header
 		);
 
 		this.Section(header);
