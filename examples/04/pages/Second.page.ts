@@ -3,7 +3,7 @@ import { Vector2, vector2 } from '../../../src/math/Vector2';
 import common from './sections/common';
 
 class Second extends Page {
-	private FONT_SIZE = 18;
+	private FONT_SIZE = 8;
 
 	private FONT_COLOR = '#ffffff';
 
