@@ -39,15 +39,24 @@ class Section {
 		};
 	}
 
-	// addLine(start: Vector2, end: Vector2) {
-	// 	const line = this.PARENT.ComposerLine.new(
-	// 		this.content.start.clone().addVec(start),
-	// 		this.content.start.clone().addVec(end)
-	// 	);
+	addLine(start: Vector2, end: Vector2) {
+		const line = this.PARENT.ComposerLine.new(
+			this.start.clone().addVec(start),
+			this.start.clone().addVec(end)
+		);
 
-	// 	this.content.lines.push(line);
-	// 	return line;
-	// }
+		// line.end.substractVec(this.start);
+
+		this.content.lines.push(line);
+
+		const SizeVector = line.end
+			.clone()
+			.addVec(this.start)
+			.substractVec(this.start.clone())
+			.addVec(this.padding.clone().scale(2));
+		this.size.update(SizeVector);
+		return line;
+	}
 
 	addText(
 		text: string,
