@@ -9,14 +9,14 @@ const headerSection = (parent: Page, orderId: string) => {
 	header.setSize(vector2(parent.Size.X - parent.Padding.X * 2, 0));
 
 	const logo = fs.readFileSync(
-		path.join(path.dirname(path.dirname(__dirname)), '/assets/logo2.png'),
+		path.join(path.dirname(path.dirname(__dirname)), '/assets/logo3.png'),
 		{ encoding: 'base64' }
 	);
 
 	const logoImage = header.addImage(
 		logo,
-		vector2(header.Size.X - 60, -5),
-		vector2(60, 20)
+		vector2(header.Size.X - 41, -5),
+		vector2(41, 20)
 	);
 
 	const title = header.addText('Kingsbox Rack Configuration', vector2(0, 0), {
@@ -31,11 +31,6 @@ const headerSection = (parent: Page, orderId: string) => {
 			fontSize: 10,
 		}
 	);
-
-	// header.addLine(
-	// 	vector2(0, header.Position.Y + header.Size.Y),
-	// 	header.Size.setY(22)
-	// );
 
 	header.rednerBorder({
 		side: 'bottom',

@@ -4,8 +4,8 @@
 import jsPDF from 'jspdf';
 
 import { PDFBuilder } from '../../src';
-import First from './pages/First.page';
 import IOSEVKA from './fonts/iosevka';
+import First from './pages/First.page';
 import Second from './pages/Second.page';
 
 const EXAMPLE_ID = '04';
@@ -18,8 +18,11 @@ const builder = new PDFBuilder(doc);
 builder.FontLoader.addFontFamily(IOSEVKA);
 builder.FontLoader.setFont(IOSEVKA.SEMI_BOLD);
 
-// builder.AddPage(new First(builder));
-builder.AddPage(new Second(builder));
+const ORDER_ID =
+	'9dccf243290cb418b7ee138654e30f4822628ba1010898fa56977b5a1bc7d4cf';
+
+builder.AddPage(new First(builder, ORDER_ID));
+builder.AddPage(new Second(builder, ORDER_ID));
 
 builder.render();
 

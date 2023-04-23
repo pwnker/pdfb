@@ -1,125 +1,183 @@
 import { PDFBuilder, Page, Section } from '../../../src';
 import { Vector2, vector2 } from '../../../src/math/Vector2';
+import DATA from './ImageData';
 import common from './sections/common';
 
 class First extends Page {
-	private FONT_SIZE = 18;
-
 	private FONT_COLOR = '#ffffff';
 
-	private SECTION_SPACING = 10;
+	private orderId: string;
 
-	clientSection(
-		start: Vector2,
-		email: string,
-		mobile: string,
-		header: Section
-	) {
-		const test = new Section(this, start, vector2(2, 2));
-
-		test.setSize(vector2(header.Size.X / 2 - this.SECTION_SPACING / 2, 0));
-
-		const INDENT = vector2(5, 1);
-
-		const title = test.addText('Client:', vector2(0, 0), {
-			fontSize: this.FONT_SIZE + 2,
-			underline: true,
-			color: this.FONT_COLOR,
-		});
-
-		const emailText = test.addText(
-			`email: ${email}`,
-			vector2(
-				title.Start().X - test.Start.X + INDENT.X,
-				test.Size.Y - test.Padding.Y * 2 + INDENT.Y
-			),
-			{
-				fontSize: this.FONT_SIZE,
-				color: this.FONT_COLOR,
-			}
-		);
-
-		const mobileText = test.addText(
-			`mobile: ${mobile}`,
-			vector2(
-				title.Start().X - test.Start.X + INDENT.X,
-				emailText.End().Y + INDENT.Y
-			),
-			{
-				fontSize: this.FONT_SIZE,
-				color: this.FONT_COLOR,
-			}
-		);
-
-		test.setSize(test.Size.add(0, 1));
-
-		test.fill();
-
-		return test;
+	constructor(parent: PDFBuilder, orderId: string) {
+		super(parent);
+		this.orderId = orderId;
 	}
 
-	priceSection(start: Vector2, priceStream: string, header: Section) {
-		const priceSplit = priceStream.split(';');
-
+	configurationSection(
+		start: Vector2,
+		data: Record<string, Record<string, string | Record<string, string>>>,
+		header: Section
+	) {
 		const section = new Section(this, start, vector2(2, 2));
 
-		section.setSize(vector2(header.Size.X / 2 - this.SECTION_SPACING / 2, 0));
+		section.setSize(vector2(header.Size.X / 2 - start.X, 0));
 
-		const title = section.addText('Price:', vector2(0, 0), {
-			fontSize: this.FONT_SIZE + 2,
-			underline: true,
-			color: this.FONT_COLOR,
-		});
+		const INDENT = 5;
+		let line = 0;
 
-		const INDENT = vector2(5, 1);
-
-		priceSplit.forEach((price) => {
-			if (price === '') return;
-			const priceText = section.addText(
-				`+ ${price}`,
-				title
-					.End()
-					.setX(title.Start().X - section.Start.X)
-					.addVec(INDENT),
+		const appendParameterText = (
+			parameterKey: string,
+			parameterValue: string,
+			indent: number,
+			underline = false
+		) => {
+			const parameterText = section.addText(
+				`${parameterKey}: ${parameterValue}`,
+				vector2(indent, line),
 				{
-					fontSize: this.FONT_SIZE,
 					color: this.FONT_COLOR,
+					underline,
 				}
 			);
-			INDENT.add(0, priceText.size.Y);
+			line += parameterText.size.Y;
+		};
+
+		Object.keys(data).forEach((dkey) => {
+			const property = data[dkey];
+			appendParameterText(dkey, '', 0, true);
+
+			Object.keys(property).forEach((parameterKey) => {
+				const parameter = property[parameterKey];
+				if (typeof parameter === 'string') {
+					appendParameterText(parameterKey, parameter, INDENT);
+				} else if (typeof parameter === 'object') {
+					appendParameterText(parameterKey, '', INDENT, true);
+
+					Object.keys(parameter).forEach((subparameterKey) => {
+						const subparameter = parameter[subparameterKey];
+						appendParameterText(subparameterKey, subparameter, INDENT * 2);
+					});
+				}
+			});
+			line += INDENT;
 		});
 
 		section.fill();
+
+		return section;
+	}
+
+	imageSection(start: Vector2, images: Record<string, string>) {
+		const section = new Section(this, start);
+
+		const IMAGE_SPACING = 5;
+
+		let line = 0;
+
+		Object.keys(images).forEach((key) => {
+			const image = images[key]; // base64 encoding
+
+			const sectionImage = section.addImage(
+				image,
+				vector2(0, line),
+				vector2(75, 75)
+			);
+			line += sectionImage.size.Y;
+
+			const sectionLine = section.addLine(
+				vector2(0, line),
+				vector2(sectionImage.size.X, line)
+			);
+			line += sectionLine.size.Y + IMAGE_SPACING;
+		});
+
 		return section;
 	}
 
 	bootstrap(): void {
-		this.setPadding(15, 15);
+		this.setPadding(10, 10);
 
-		const header = common.headerSection(
-			this,
-			'9dccf243290cb418b7ee138654e30f4822628ba1010898fa56977b5a1bc7d4cf'
-		);
+		const header = common.headerSection(this, this.orderId);
 
-		const client = this.clientSection(
-			vector2(header.Position.X, header.Position.Y + header.Size.Y + 2),
-			'example@gmail.com',
-			'0038640437269',
+		const exampleData = {
+			RACK_MODEL: {
+				id: 'mighty.squat.rack.sx-20',
+				sku: 'KB04MI-004',
+			},
+			CONSTRUCTION: {
+				color: {
+					sku: 'KB04MI-004-08',
+					name: 'yellow',
+				},
+				front: {
+					sku: 'KB05MI-117',
+					range: 'mighty',
+					extension: 'super',
+				},
+				back: {
+					sku: 'none',
+					range: 'none',
+					extension: 'none',
+				},
+			},
+			BUMPER_STACKER: {
+				name: 'mortarStacker',
+				sku: 'KB05MI-009',
+				size: '4',
+			},
+			SHELVES: {
+				top: {
+					sku: 'KB08MI-008',
+					range: 'dumbbell',
+				},
+				middle: {
+					sku: 'KB08MI-007',
+					range: 'kettlebell',
+				},
+				bottom: {
+					sku: 'KB08MI-009',
+					range: 'sb',
+				},
+			},
+			PULLUP_BAR: {
+				sku: 'KB05MI-090',
+				range: 'triangle',
+			},
+			EXTRA_EQUIPMENT: {
+				JAMMER_ARMS: {
+					sku: 'none',
+					name: 'none',
+				},
+				SAFETY_ARMS: {
+					sku: 'KB05MI-015',
+					name: 'mightyAngelArms',
+				},
+				LEG_EXTENSION: {
+					sku: 'KB05MI-099',
+					name: 'mighty',
+				},
+				DIP_BAR: {
+					sku: 'none',
+					range: 'none',
+					position: 'none',
+				},
+			},
+		};
+
+		const configuration = this.configurationSection(
+			header.Position.add(0, header.Size.Y + 2),
+			exampleData,
 			header
 		);
 
-		const price = this.priceSection(
-			vector2(
-				client.Position.X + client.Size.X + this.SECTION_SPACING,
-				client.Position.Y
-			),
-			'KB05MI-982;KB05MI-892;KB05MI-829;KB05MI-982;KB05MI-929;',
-			header
+		const images = this.imageSection(
+			configuration.Position.add(header.Size.X - configuration.Size.X, 0),
+			DATA
 		);
 
 		this.Section(header);
-		this.Section(client);
-		this.Section(price);
+		this.Section(configuration);
+		this.Section(images);
 	}
 }
 
