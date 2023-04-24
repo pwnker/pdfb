@@ -7,7 +7,7 @@ import Page from '../page/Page';
 class PDFBuilder {
 	private doc: jsPDF;
 
-	Pages: Page[] = [];
+	private pages: Page[] = [];
 
 	private fontLoader: FontLoader;
 
@@ -19,7 +19,7 @@ class PDFBuilder {
 	}
 
 	clearBuffer() {
-		this.Pages = [];
+		this.pages = [];
 	}
 
 	/**
@@ -28,7 +28,7 @@ class PDFBuilder {
 	 * Order: ```Images -> Rects -> Texts -> Lines```
 	 */
 	render() {
-		this.Pages.forEach((page, index) => {
+		this.pages.forEach((page, index) => {
 			if (index > 0) {
 				this.doc.addPage();
 			}
@@ -41,7 +41,7 @@ class PDFBuilder {
 	 * @Cleanup - should the user be responsable for the start, position and buffer reset ??
 	 */
 	AddPage(page: Page) {
-		this.Pages.push(page);
+		this.pages.push(page);
 	}
 
 	get Document() {
@@ -50,6 +50,10 @@ class PDFBuilder {
 
 	get FontLoader() {
 		return this.fontLoader;
+	}
+
+	get Pages() {
+		return this.pages;
 	}
 }
 

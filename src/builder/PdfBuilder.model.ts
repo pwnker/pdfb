@@ -1,6 +1,5 @@
 import { Vector2 } from '../math/Vector2';
 import Page from '../page/Page';
-// import PDFBuilder from './PDFBuilder';
 
 export interface PDFElement {
 	PARENT: Page;
