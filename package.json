@@ -13,7 +13,7 @@
     "build": "rimraf ./dist/ && tsc",
     "format": "prettier --write ./src/"
   },
-  "keywords": [],
+  "keywords": ["pdf", "jsPdf", "pdf builder", "compose pdf", "wrapper library"],
   "author": "Tilen Okretic",
   "license": "MIT",
   "dependencies": {
