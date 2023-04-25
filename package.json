@@ -1,11 +1,13 @@
 {
   "name": "pdfb",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A pdf building library for nodejs",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "./dist"
+    "./dist",
+    "./src",
+    "./tsconfig.json"
   ],
   "scripts": {
     "build": "rimraf ./dist/ && tsc",
