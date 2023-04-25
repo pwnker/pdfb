@@ -4,33 +4,13 @@ A pdf building library for nodejs hehe.
 
 ---
 
+!! DOCUMENTATION IN PROGRESS !!
+
+---
+
 ## TODO
-
-* [ ] ```Section.class``` calculate **start**, **end**, **size** based of the elements inside
-  * basically a way of creating a wrapper (background) that covers all elements of a section
-
-* [ ] ```Page```
-  * Stores individual page data
-  * ```Section[]```
-  * ```PdfBuilder.class``` stores a page array ```Page[]```
-  * Page props:
-    * ``` typescript
-        private Elements: {
-          Texts: Text[];
-          Lines: Line[];
-          Images: Image[];
-          Rects: Rect[];
-        }
-      ```
-    * ``` typescript
-        private pageNumber: number;
-      ```
-
-* [ ] Fix padding handling inside ```PdfBuilder```
-  * Padding should affect the document start/end positions
-
-* [ ] PdfBuilder 
-  * [ ] save document
+* [x] PdfBuilder 
+  * [x] save document
   ```typescript
       save(options?: {
         render: true,
@@ -46,3 +26,15 @@ A pdf building library for nodejs hehe.
 ---
 
 ## DONE
+
+
+* [x] ```Section.class``` calculate **start**, **end**, **size** based of the elements inside
+  * basically a way of creating a wrapper (background) that covers all elements of a section
+
+* [x] ```Page```
+  * Stores individual page data
+  * ```Section[]```
+  * ```PdfBuilder.class``` stores a page array ```Page[]```
+
+* [x] Fix padding handling inside ```PdfBuilder```
+  * Padding should affect the document start/end positions

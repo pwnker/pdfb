@@ -45,8 +45,6 @@ class Section {
 			this.start.clone().addVec(end)
 		);
 
-		// line.end.substractVec(this.start);
-
 		this.content.lines.push(line);
 
 		const SizeVector = line.end
