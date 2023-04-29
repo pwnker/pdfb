@@ -32,8 +32,8 @@ const headerSection = (parent: Page, orderId: string) => {
 		}
 	);
 
-	header.rednerBorder({
-		side: 'bottom',
+	header.addRect(vector2(0, 22), header.Size.setY(1)).setStyle({
+		fillStyle: 'F',
 	});
 
 	return header;
