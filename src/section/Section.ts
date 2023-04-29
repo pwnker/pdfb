@@ -19,6 +19,7 @@ class Section {
 		lines: Line[];
 		images: Image[];
 		texts: Text[];
+		rects: Rect[];
 	};
 
 	constructor(parent: Page, position: Vector2, padding?: Vector2) {
@@ -36,6 +37,7 @@ class Section {
 			lines: [],
 			images: [],
 			texts: [],
+			rects: [],
 		};
 	}
 
@@ -117,6 +119,26 @@ class Section {
 		return img;
 	}
 
+	addRect(position: Vector2, size: Vector2) {
+		const rect = this.PARENT.ComposeRect.new(
+			this.start.clone().addVec(position),
+			size
+		);
+
+		rect.end.substractVec(this.start);
+
+		this.content.rects.push(rect);
+
+		const SizeVector = rect.end
+			.clone()
+			.addVec(this.start)
+			.substractVec(this.start.clone())
+			.addVec(this.padding.clone().scale(2));
+		this.size.update(SizeVector);
+
+		return rect;
+	}
+
 	rednerBorder(
 		options: { side: 'top' | 'bottom' | 'left' | 'right' | 'all' } = {
 			side: 'all',
@@ -155,6 +177,10 @@ class Section {
 
 		this.content.lines.forEach((line) => {
 			line.render();
+		});
+
+		this.content.rects.forEach((rect) => {
+			rect.render();
 		});
 
 		this.content.images.forEach((image) => {
