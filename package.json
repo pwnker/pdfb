@@ -21,6 +21,10 @@
     "wrapper library"
   ],
   "author": "Tilen Okretic",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/px2tilc/pdfb.git"
+  },
   "license": "MIT",
   "dependencies": {
     "jspdf": "^2.5.1"
