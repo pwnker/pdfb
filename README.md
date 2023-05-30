@@ -9,14 +9,6 @@ A pdf building library for nodejs hehe.
 ---
 
 ## TODO
-* [x] PdfBuilder 
-  * [x] save document
-  ```typescript
-      save(options?: {
-        render: true,
-        savePath: ''
-      })
-  ```
   * [ ] Save path setters / getters
   ```typescript
   setSavePath(path: string): string;
@@ -27,6 +19,14 @@ A pdf building library for nodejs hehe.
 
 ## DONE
 
+* [x] PdfBuilder 
+  * [x] save document
+  ```typescript
+      save(options?: {
+        render: true,
+        savePath: ''
+      })
+  ```
 
 * [x] ```Section.class``` calculate **start**, **end**, **size** based of the elements inside
   * basically a way of creating a wrapper (background) that covers all elements of a section
