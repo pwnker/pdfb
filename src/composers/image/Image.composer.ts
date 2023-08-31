@@ -50,7 +50,9 @@ class ImageComposer extends Composer {
 					this.start.X,
 					this.start.Y,
 					size.X,
-					size.Y
+					size.Y,
+					'FAST',
+					'MEDIUM'
 				);
 			},
 			Start() {
