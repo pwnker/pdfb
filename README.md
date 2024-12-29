@@ -1,5 +1,7 @@
 # PDFB
 
+<img width="333" height="132" style="margin-bottom: 16px;" src="./PDFb-logo.png" />
+
 A pdf building library for nodejs hehe.
 
 ---
